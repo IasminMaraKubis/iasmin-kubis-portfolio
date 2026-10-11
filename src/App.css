@@ -732,7 +732,8 @@ html {
   }
 }
 
-/* CORREÇÃO DO CENÁRIO NO CELULAR */
+
+/* AJUSTE DO CENÁRIO NO CELULAR */
 
 @media (max-width: 700px) {
   .inicio {
@@ -740,38 +741,51 @@ html {
   }
 
   .camera {
+    width: 100%;
     overflow: hidden;
   }
 
   .cenario {
+    display: block;
     width: 100%;
     height: auto;
-    transform-origin: 28% 30%;
+    transform-origin: center center;
   }
 
-  /* Evita que o zoom automático corte a personagem */
-  .camera:hover .cenario,
+  .camera-normal .cenario,
   .camera-normal:hover .cenario {
-    transform:
-      translate(
-        var(--mouse-x, 0px),
-        var(--mouse-y, 0px)
-      )
-      scale(1);
+    transform: scale(1);
   }
 
-  /* Mantém os botões de aproximação funcionando */
   .camera-feliz .cenario,
   .camera-feliz:hover .cenario {
-    transform: scale(1.12);
+    transform: scale(1.08);
   }
 
   .camera-curiosa .cenario,
   .camera-curiosa:hover .cenario {
-    transform: scale(1.18);
+    transform: scale(1.12);
   }
 
   .controles-personagem {
-    padding: 20px 12px;
+    position: relative;
+    left: auto;
+    bottom: auto;
+    justify-content: center;
+    padding: 18px 12px;
+  }
+
+  .controles-personagem button {
+    font-size: 12px;
+    padding: 10px 13px;
+  }
+
+  .botao-projetos {
+    position: relative;
+    display: table;
+    top: auto;
+    right: auto;
+    bottom: auto;
+    margin: 0 auto 25px;
   }
 }
