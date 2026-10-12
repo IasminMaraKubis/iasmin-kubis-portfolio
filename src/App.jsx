@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { BrowserRouter, Link, NavLink, Route, Routes, useLocation, useNavigate } from 'react-router-dom'
 import ProjetoModal from './ProjetoModal'
+import Projetos from './Projetos'
 import SobreMim from './SobreMim'
 import Contato from './Contato'
 import './App.css'
@@ -121,8 +122,16 @@ function PaginaSobre() {
   return <div className="pagina-interna"><div className="pagina-abertura"><span className="etiqueta-pagina">01 / QUEM SOU</span><h1>Além do <em>código.</em></h1><p>Uma mente curiosa, apaixonada por transformar ideias em possibilidades.</p></div><SobreMim /><div className="proxima-pagina"><span>Próxima parada</span><Link to="/projetos">Conheça meus projetos <span aria-hidden="true">↗</span></Link></div></div>
 }
 function PaginaProjetos() {
-  const [aberto, setAberto] = useState(null)
-  return <div className="pagina-interna"><div className="pagina-abertura"><span className="etiqueta-pagina">02 / O QUE CRIO</span><h1>Ideias em <em>movimento.</em></h1><p>Projetos, experimentos e soluções em evolução.</p></div><section className="projetos projetos-pagina" id="projetos"><p className="subtitulo">MEU TRABALHO</p><h2>Projetos<span>.</span></h2><div className="cards">{projetos.map(projeto => <button type="button" className="card card-projeto" key={projeto.numero} onClick={() => setAberto(projeto)}><div className="projeto-topo"><span className="projeto-icone">{projeto.icone}</span><span className="projeto-status">{projeto.status}</span></div><span className="card-numero">PROJETO {projeto.numero}</span><h3>{projeto.titulo}</h3><p>{projeto.descricao}</p><span className="projeto-tecnologias">{projeto.tecnologias}</span><span className="projeto-ver">Ver detalhes →</span></button>)}</div></section><div className="proxima-pagina"><span>Tem uma ideia?</span><Link to="/contato">Vamos conversar <span aria-hidden="true">↗</span></Link></div><ProjetoModal projeto={aberto} fechar={() => setAberto(null)} /></div>
+  return (
+    <div className="pagina-interna">
+      <div className="pagina-abertura">
+        <span className="etiqueta-pagina">02 / O QUE CRIO</span>
+        <h1>Ideias em <em>movimento.</em></h1>
+        <p>Projetos, experimentos e soluções em evolução.</p>
+      </div>
+      <Projetos />
+    </div>
+  )
 }
 function PaginaContato() {
   return <div className="pagina-interna"><div className="pagina-abertura"><span className="etiqueta-pagina">03 / VAMOS CONVERSAR</span><h1>O próximo projeto <em>pode começar aqui.</em></h1><p>Adoro conhecer pessoas, trocar ideias e criar novas possibilidades.</p></div><Contato /><div className="proxima-pagina"><span>Voltar ao começo</span><Link to="/">Meu universo digital <span aria-hidden="true">↗</span></Link></div></div>

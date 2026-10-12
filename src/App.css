@@ -1712,3 +1712,63 @@ html {
   .proxima-pagina { padding: 40px 7%; }
 }
 @media (prefers-reduced-motion: reduce) { .troca-pagina, .pagina-abertura::before { animation: none; } .navegacao-links a, .convite-explorar a { transition: none; } }
+/* Transições e interações premium */
+
+@keyframes entrarPagina {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+    filter: blur(5px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+.portfolio {
+  animation: entrarPagina 600ms ease-out;
+}
+
+.menu-links a {
+  position: relative;
+  transition: color 250ms ease;
+}
+
+.menu-links a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -7px;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, #ff55c8, #a855f7);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 250ms ease;
+}
+
+.menu-links a:hover::after,
+.menu-links a[aria-current="page"]::after {
+  transform: scaleX(1);
+}
+
+.menu-links a:focus-visible,
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid #ff85df;
+  outline-offset: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .portfolio {
+    animation: none;
+  }
+
+  .menu-links a,
+  .menu-links a::after {
+    transition: none;
+  }
+}
