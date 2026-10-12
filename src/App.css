@@ -1589,3 +1589,126 @@ html {
 @media (prefers-reduced-motion: reduce) {
   .assistente-texto .assistente-acao { transition: none; }
 }
+
+
+/* PORTFÓLIO INTERATIVO — os seis retratos originais são apenas referência.
+   Mostramos exclusivamente o cenário superior da imagem de 1536 × 1024. */
+.camera-interativa {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1536 / 730;
+  overflow: hidden;
+}
+.camera-interativa .cenario,
+.camera-interativa:hover .cenario,
+.camera-interativa.personagem-reagindo .cenario {
+  display: block;
+  width: 100%;
+  height: auto;
+  transform: none !important;
+}
+
+/* Conserva o encaixe das camadas faciais com a arte inteira. */
+.camera-interativa .olhar-personagem,
+.camera-interativa .olhos-personagem,
+.camera-interativa .boca-personagem {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: auto;
+  pointer-events: none;
+}
+
+/* Hotspots sobre os botões desenhados no cenário, sem duplicá-los. */
+.camera-interativa .cta-cenario {
+  position: absolute;
+  z-index: 6;
+  top: 61%;
+  height: 7.9%;
+  border-radius: 50px;
+  background: transparent;
+  cursor: pointer;
+}
+.camera-interativa .cta-cenario-projetos { left: 60.1%; width: 16.4%; }
+.camera-interativa .cta-cenario-contato { left: 77.4%; width: 13.3%; }
+.camera-interativa .cta-cenario:focus-visible {
+  outline: 3px solid #ff85df;
+  outline-offset: 4px;
+}
+
+.acoes-mobile { display: none; }
+@media (max-width: 700px) {
+  .camera-interativa { aspect-ratio: 1536 / 730; }
+  .camera-interativa .cta-cenario { display: none; }
+  .acoes-mobile {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 18px 12px 22px;
+  }
+  .acoes-mobile a {
+    padding: 12px 16px;
+    border: 1px solid rgba(255, 133, 223, .65);
+    border-radius: 999px;
+    background: rgba(37, 9, 63, .92);
+    color: white;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: bold;
+  }
+  .acoes-mobile a:focus-visible { outline: 3px solid #ff85df; }
+}
+
+/* NAVEGAÇÃO POR PÁGINAS — visual e transições */
+.portfolio-com-paginas { min-height: 100vh; background: #10051e; }
+.navegacao-topo { position: fixed; z-index: 100; top: 0; left: 0; right: 0; height: 72px; display: flex; justify-content: space-between; align-items: center; gap: 24px; padding: 0 7%; border-bottom: 1px solid rgba(255,133,223,.18); background: rgba(16,5,30,.85); backdrop-filter: blur(20px); }
+.navegacao-logo { color: white; font-size: 28px; font-weight: 900; letter-spacing: -.04em; text-decoration: none; }
+.navegacao-logo span { color: #ff55c8; }
+.navegacao-links { display: flex; align-items: center; gap: 8px; }
+.navegacao-links a { padding: 10px 17px; border-radius: 30px; color: #e8d9f0; text-decoration: none; font-size: 13px; font-weight: 700; transition: background .2s ease, color .2s ease, transform .2s ease; }
+.navegacao-links a:hover { color: white; background: rgba(168,85,247,.20); transform: translateY(-2px); }
+.navegacao-links a.ativo { color: #190423; background: linear-gradient(100deg,#ff55c8,#b35bfc); }
+.navegacao-toggle { display: none; border: 0; background: transparent; color: white; font-size: 26px; cursor: pointer; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; }
+.troca-pagina { padding-top: 72px; min-height: 100vh; animation: abrir-pagina .55s cubic-bezier(.2,.8,.2,1) both; }
+@keyframes abrir-pagina { from { opacity: 0; transform: translateY(18px); filter: blur(7px); } to { opacity: 1; transform: translateY(0); filter: blur(0); } }
+.pagina-inicio { position: relative; min-height: calc(100vh - 72px); background: #10051e; }
+.pagina-inicio .hero-vivo { aspect-ratio: 1536 / 730; max-height: calc(100vh - 112px); }
+.pagina-inicio .hero-vivo .cenario { width: 100%; height: auto; }
+.pagina-inicio .camera-interativa .cenario { transform: none !important; }
+.pagina-inicio .hero-vivo .olhar-personagem { transition: opacity .24s ease; }
+.pagina-inicio .halo-cursor { position: absolute; z-index: 1; inset: 0; pointer-events: none; background: radial-gradient(circle at var(--luz-x) var(--luz-y), rgba(255,82,195,.10), transparent 25%); transition: background .2s ease; }
+.pagina-inicio .camera-interativa .cta-cenario { border: none; }
+.convite-explorar { display: flex; align-items: center; justify-content: center; gap: 17px; padding: 18px; color: #d8b6ef; font-size: 12px; text-transform: uppercase; letter-spacing: .17em; }
+.convite-explorar a { display: grid; place-items: center; width: 36px; height: 36px; border: 1px solid rgba(255,85,200,.4); border-radius: 50%; color: #ff85df; text-decoration: none; font-size: 21px; transition: transform .2s; }
+.convite-explorar a:hover { transform: translateY(4px); }
+.pagina-interna { min-height: calc(100vh - 72px); }
+.pagina-abertura { position: relative; overflow: hidden; padding: clamp(90px, 12vw, 170px) 8% clamp(55px, 7vw, 100px); background: radial-gradient(ellipse at 80% 35%, rgba(151,51,190,.34), transparent 53%),radial-gradient(ellipse at 20% 80%, rgba(255,75,190,.10), transparent 40%),#10051e; }
+.pagina-abertura::before { content: '✦'; position: absolute; top: 20%; right: 10%; color: rgba(255,133,223,.25); font-size: clamp(95px,15vw,230px); animation: girar-brilho 20s linear infinite; }
+@keyframes girar-brilho { to { transform: rotate(360deg); } }
+.etiqueta-pagina { display: inline-block; margin-bottom: 30px; color: #ff8fe7; font-size: 12px; font-weight: bold; letter-spacing: .34em; }
+.pagina-abertura h1 { position: relative; max-width: 1050px; margin: 0; font-size: clamp(46px, 8vw, 116px); line-height: 1.04; letter-spacing: -.055em; }
+.pagina-abertura h1 em { font-style: normal; background: linear-gradient(120deg,#ff60cc,#b55dff); color: transparent; background-clip: text; }
+.pagina-abertura p { position: relative; max-width: 620px; margin: 26px 0 0; color: #d6c1e6; font-size: clamp(16px,1.6vw,20px); line-height: 1.7; }
+.pagina-interna .sobre { padding-top: 95px; }
+.pagina-interna .projetos-pagina { min-height: auto; padding: 70px 8% 120px; }
+.proxima-pagina { display: flex; justify-content: space-between; align-items: center; gap: 22px; flex-wrap: wrap; padding: 65px 8%; border-top: 1px solid rgba(255,133,223,.18); background: #160824; }
+.proxima-pagina > span { color: #bf9fce; font-size: 13px; letter-spacing: .15em; text-transform: uppercase; }
+.proxima-pagina a { color: white; font-weight: 800; text-decoration: none; font-size: clamp(20px,3vw,36px); }
+.proxima-pagina a span { color: #ff55c8; }
+.proxima-pagina a:hover { color: #ff96e5; }
+.portfolio-com-paginas .assistente-navegacao { z-index: 110; }
+@media (max-width: 700px) {
+  .navegacao-topo { padding: 0 6%; }
+  .navegacao-toggle { display: block; }
+  .navegacao-links { position: absolute; top: 72px; left: 0; right: 0; display: none; flex-direction: column; align-items: stretch; gap: 8px; padding: 18px 6% 25px; background: rgba(16,5,30,.98); border-bottom: 1px solid rgba(255,133,223,.25); }
+  .navegacao-links.abertos { display: flex; }
+  .navegacao-links a { padding: 14px 18px; }
+  .pagina-inicio .hero-vivo { max-height: none; }
+  .pagina-abertura { padding: 85px 7% 75px; }
+  .pagina-interna .projetos-pagina { padding: 55px 6% 80px; }
+  .proxima-pagina { padding: 40px 7%; }
+}
+@media (prefers-reduced-motion: reduce) { .troca-pagina, .pagina-abertura::before { animation: none; } .navegacao-links a, .convite-explorar a { transition: none; } }

@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
+import { BrowserRouter, Link, NavLink, Route, Routes, useLocation, useNavigate } from 'react-router-dom'
 import ProjetoModal from './ProjetoModal'
 import SobreMim from './SobreMim'
 import Contato from './Contato'
-import Menu from './Menu'
 import './App.css'
 
 const projetos = [
@@ -10,34 +10,51 @@ const projetos = [
   { numero: '02', titulo: 'Desenvolvimento Web', descricao: 'Criação de interfaces e soluções web com foco em experiência do usuário.', tecnologias: 'HTML • CSS • JavaScript', status: 'Em preparação', icone: '◇' },
   { numero: '03', titulo: 'Próximo projeto', descricao: 'Um espaço reservado para uma nova ideia que ganhará vida em breve.', tecnologias: 'Novas tecnologias', status: 'Em breve', icone: '✦' }
 ]
-
 const falas = [
   'Oi! Que bom ter você por aqui! 💜',
   'Sou desenvolvedora Java e estudo Engenharia de Software. ✨',
   'Adoro transformar ideias em tecnologia! 💻',
-  'Conheça meus projetos logo abaixo! 🚀'
+  'Conheça meus projetos! 🚀'
+]
+const rotas = [
+  { caminho: '/', nome: 'Início' },
+  { caminho: '/sobre', nome: 'Sobre mim' },
+  { caminho: '/projetos', nome: 'Projetos' },
+  { caminho: '/contato', nome: 'Contato' }
 ]
 
-function App() {
-  const [projetoAberto, setProjetoAberto] = useState(null)
-  const [fala, setFala] = useState('')
+function Navegacao() {
+  const [aberto, setAberto] = useState(false)
+  const location = useLocation()
+  useEffect(() => setAberto(false), [location.pathname])
+  return (
+    <header className="navegacao-topo">
+      <Link to="/" className="navegacao-logo" aria-label="Iasmin Kubis, início">IK<span>.</span></Link>
+      <button type="button" className="navegacao-toggle" onClick={() => setAberto(v => !v)} aria-expanded={aberto} aria-controls="navegacao-links">{aberto ? '✕' : '☰'}<span className="sr-only">Menu</span></button>
+      <nav id="navegacao-links" className={`navegacao-links ${aberto ? 'abertos' : ''}`} aria-label="Páginas do portfólio">
+        {rotas.map(item => <NavLink key={item.caminho} to={item.caminho} end={item.caminho === '/'} className={({ isActive }) => isActive ? 'ativo' : ''}>{item.nome}</NavLink>)}
+      </nav>
+    </header>
+  )
+}
+
+function Inicio() {
+  const navigate = useNavigate()
+  const [fala, setFala] = useState('Oi! Bem-vindo ao meu universo digital. 💜')
   const [animando, setAnimando] = useState(false)
   const [piscando, setPiscando] = useState(false)
-  const [sorrindo, setSorrindo] = useState(false)
+  const [sorrindo, setSorrindo] = useState(true)
   const [direcaoOlhar, setDirecaoOlhar] = useState(null)
-  const [avisoSecao, setAvisoSecao] = useState(null)
-
+  const [luz, setLuz] = useState({ x: 36, y: 35 })
   const tempoSorriso = useRef(null)
   const tempoPiscar = useRef(null)
   const proximoPiscar = useRef(null)
-  const indice = useRef(0)
   const tempoFala = useRef(null)
   const tempoAnimacao = useRef(null)
-  const tempoAviso = useRef(null)
-
+  const indice = useRef(0)
   useEffect(() => {
     let ativo = true
-    function piscar() {
+    const piscar = () => {
       if (!ativo) return
       setPiscando(true)
       clearTimeout(tempoPiscar.current)
@@ -45,41 +62,25 @@ function App() {
       proximoPiscar.current = setTimeout(piscar, 2800 + Math.random() * 3200)
     }
     proximoPiscar.current = setTimeout(piscar, 1700)
+    tempoSorriso.current = setTimeout(() => setSorrindo(false), 2300)
+    tempoFala.current = setTimeout(() => setFala(''), 3800)
     return () => {
       ativo = false
-      clearTimeout(tempoPiscar.current)
-      clearTimeout(proximoPiscar.current)
+      ;[tempoPiscar, proximoPiscar, tempoSorriso, tempoFala, tempoAnimacao].forEach(t => clearTimeout(t.current))
     }
   }, [])
-
-  useEffect(() => () => {
-    clearTimeout(tempoFala.current)
-    clearTimeout(tempoAnimacao.current)
-    clearTimeout(tempoSorriso.current)
-    clearTimeout(tempoAviso.current)
-  }, [])
-
-  function moverMouse(evento) {
-    if (evento.pointerType !== 'mouse') return
-    const bounds = evento.currentTarget.getBoundingClientRect()
-    const x = (evento.clientX - bounds.left) / bounds.width
-    setDirecaoOlhar(x < 0.35 ? 'esquerda' : x > 0.65 ? 'direita' : null)
-  }
-
   function reagir(texto) {
-    setSorrindo(true)
-    clearTimeout(tempoSorriso.current)
-    tempoSorriso.current = setTimeout(() => setSorrindo(false), 2300)
-
     setFala(texto)
+    setSorrindo(true)
     setAnimando(false)
+    clearTimeout(tempoSorriso.current)
     clearTimeout(tempoFala.current)
     clearTimeout(tempoAnimacao.current)
     requestAnimationFrame(() => setAnimando(true))
     tempoAnimacao.current = setTimeout(() => setAnimando(false), 650)
+    tempoSorriso.current = setTimeout(() => setSorrindo(false), 2300)
     tempoFala.current = setTimeout(() => setFala(''), 3500)
   }
-
   function clicarPersonagem() {
     setPiscando(true)
     clearTimeout(tempoPiscar.current)
@@ -87,115 +88,55 @@ function App() {
     reagir(falas[indice.current % falas.length])
     indice.current += 1
   }
-
-  // Mensagens das seções aparecem na posição atual da página, não no topo.
-  useEffect(() => {
-    const secoes = [
-      { seletor: '#sobre, .sobre', titulo: 'Sobre mim', mensagem: 'Prazer! Vou te contar um pouquinho sobre mim. 💜', destino: '#projetos', acao: 'Ver projetos →' },
-      { seletor: '#projetos', titulo: 'Projetos', mensagem: 'Aqui você pode conhecer meus projetos! 🚀', destino: '#contato', acao: 'Ir para contato →' },
-      { seletor: '#contato, .contato', titulo: 'Contato', mensagem: 'Gostou do meu trabalho? Vamos conversar! 💌', destino: '#inicio', acao: 'Voltar ao início ↑' }
-    ]
-    const visitadas = new Set()
-    const observador = new IntersectionObserver((entradas) => {
-      for (const entrada of entradas) {
-        if (!entrada.isIntersecting) continue
-        const info = secoes.find((item) => document.querySelector(item.seletor) === entrada.target)
-        if (!info || visitadas.has(info.seletor)) continue
-        visitadas.add(info.seletor)
-        setAvisoSecao({ titulo: info.titulo, mensagem: info.mensagem, destino: info.destino, acao: info.acao })
-        clearTimeout(tempoAviso.current)
-        tempoAviso.current = setTimeout(() => setAvisoSecao(null), 4500)
-      }
-    }, { threshold: 0.15 })
-
-    secoes.forEach(({ seletor }) => {
-      const elemento = document.querySelector(seletor)
-      if (elemento) observador.observe(elemento)
-    })
-    return () => {
-      observador.disconnect()
-      clearTimeout(tempoAviso.current)
-    }
-  }, [])
-
+  function moverMouse(evento) {
+    if (evento.pointerType !== 'mouse') return
+    const b = evento.currentTarget.getBoundingClientRect()
+    const x = (evento.clientX - b.left) / b.width
+    const y = (evento.clientY - b.top) / b.height
+    setDirecaoOlhar(x < 0.35 ? 'esquerda' : x > 0.65 ? 'direita' : null)
+    setLuz({ x: x * 100, y: y * 100 })
+  }
   return (
-    <main className="portfolio">
-      <Menu />
-      <section className="inicio" id="inicio">
-        <div
-          className={`camera camera-interativa ${animando ? 'personagem-reagindo' : ''}`}
-          onPointerMove={moverMouse}
-          onPointerLeave={() => setDirecaoOlhar(null)}
-        >
-          <img className="cenario" src="/portfolio-cenario.png" alt="Iasmin em seu ambiente de trabalho" />
-          <img className="olhar-personagem" src="/olhar/esquerda.png" alt="" aria-hidden="true"
-            style={{ opacity: direcaoOlhar === 'esquerda' && !piscando ? 1 : 0 }} />
-          <img className="olhar-personagem" src="/olhar/direita.png" alt="" aria-hidden="true"
-            style={{ opacity: direcaoOlhar === 'direita' && !piscando ? 1 : 0 }} />
-          <img className={`olhos-personagem ${piscando ? 'olhos-piscando' : ''}`}
-            src="/olhos-fechados.png" alt="" aria-hidden="true" />
-          <img className={`boca-personagem ${sorrindo ? 'boca-sorrindo' : ''}`}
-            src="/boca-sorriso.png" alt="" aria-hidden="true" />
-          <button className="area-personagem" type="button" aria-label="Conversar com a personagem" onClick={clicarPersonagem} />
-          {fala && (
-            <div className="fala-principal" role="status" aria-live="polite">
-              <button type="button" aria-label="Fechar mensagem" onClick={() => setFala('')}>×</button>
-              {fala}
-            </div>
-          )}
-          <div className="luz-personagem" aria-hidden="true" />
-        </div>
-        <div className="controles-personagem">
-          <button type="button" onClick={() => reagir('Oi! Que bom ter você aqui! 💜')}>💜 Olá, Iasmin!</button>
-          <button type="button" onClick={() => reagir('Sou desenvolvedora Java e estudo Engenharia de Software. ✨')}>✨ O que você faz?</button>
-          <button type="button" onClick={() => { setFala(''); setSorrindo(false) }}>↩ Voltar</button>
-        </div>
-        <a href="#projetos" className="botao-projetos" onMouseEnter={() => reagir('Vem conhecer meus projetos! 🚀')}>
-          Explorar projetos ↓
-        </a>
-      </section>
-      <SobreMim />
-      <section className="projetos" id="projetos">
-        <p className="subtitulo">MEU TRABALHO</p>
-        <h2>Projetos<span>.</span></h2>
-        <p className="descricao">Ideias, experiências e soluções desenvolvidas com tecnologia.</p>
-        <div className="cards">
-          {projetos.map((projeto) => (
-            <button type="button" className="card card-projeto" key={projeto.numero} onClick={() => setProjetoAberto(projeto)}>
-              <div className="projeto-topo">
-                <span className="projeto-icone">{projeto.icone}</span>
-                <span className="projeto-status">{projeto.status}</span>
-              </div>
-              <span className="card-numero">PROJETO {projeto.numero}</span>
-              <h3>{projeto.titulo}</h3>
-              <p>{projeto.descricao}</p>
-              <span className="projeto-tecnologias">{projeto.tecnologias}</span>
-              <span className="projeto-ver">Ver detalhes →</span>
-            </button>
-          ))}
-        </div>
-        <a href="#inicio" className="voltar">↑ Voltar ao início</a>
-      </section>
-      <Contato />
-      {avisoSecao && !projetoAberto && (
-        <aside className="assistente-secao" role="status" aria-live="polite">
-          <span className="assistente-simbolo" aria-hidden="true">✦</span>
-          <div className="assistente-texto">
-            <strong>{avisoSecao.titulo}</strong>
-            <p>{avisoSecao.mensagem}</p>
-            <a href={avisoSecao.destino} className="assistente-acao" onClick={() => { clearTimeout(tempoAviso.current); setAvisoSecao(null) }}>{avisoSecao.acao}</a>
-          </div>
-          <button
-            type="button"
-            className="assistente-fechar"
-            aria-label="Fechar mensagem"
-            onClick={() => { clearTimeout(tempoAviso.current); setAvisoSecao(null) }}
-          >×</button>
-        </aside>
-      )}
-      <ProjetoModal projeto={projetoAberto} fechar={() => setProjetoAberto(null)} />
-    </main>
+    <section className="pagina-inicio" aria-label="Início do portfólio">
+      <div className={`camera camera-interativa hero-vivo ${animando ? 'personagem-reagindo' : ''}`} onPointerMove={moverMouse} onPointerLeave={() => { setDirecaoOlhar(null); setLuz({ x: 36, y: 35 }) }}>
+        <img className="cenario" src="/portfolio-cenario.png" alt="Iasmin em seu ambiente de trabalho futurista" />
+        <img className="olhar-personagem" src="/olhar/esquerda.png" alt="" aria-hidden="true" style={{ opacity: direcaoOlhar === 'esquerda' && !piscando ? 1 : 0 }} />
+        <img className="olhar-personagem" src="/olhar/direita.png" alt="" aria-hidden="true" style={{ opacity: direcaoOlhar === 'direita' && !piscando ? 1 : 0 }} />
+        <img className={`olhos-personagem ${piscando ? 'olhos-piscando' : ''}`} src="/olhos-fechados.png" alt="" aria-hidden="true" />
+        <img className={`boca-personagem ${sorrindo ? 'boca-sorrindo' : ''}`} src="/boca-sorriso.png" alt="" aria-hidden="true" />
+        <div className="halo-cursor" aria-hidden="true" style={{ '--luz-x': `${luz.x}%`, '--luz-y': `${luz.y}%` }} />
+        <button className="area-personagem" type="button" aria-label="Interagir com Iasmin" onClick={clicarPersonagem} />
+        {fala && <div className="fala-principal" role="status"><button type="button" aria-label="Fechar mensagem" onClick={() => setFala('')}>×</button>{fala}</div>}
+        <div className="luz-personagem" aria-hidden="true" />
+        <button className="cta-cenario cta-cenario-projetos" type="button" aria-label="Ver meus projetos" onClick={() => navigate('/projetos')} onMouseEnter={() => reagir('Te mostro meus projetos! 🚀')} />
+        <button className="cta-cenario cta-cenario-contato" type="button" aria-label="Falar comigo" onClick={() => navigate('/contato')} onMouseEnter={() => reagir('Vamos conversar! 💌')} />
+      </div>
+      <div className="acoes-mobile"><Link to="/projetos">Ver meus projetos →</Link><Link to="/contato">Falar comigo 💜</Link></div>
+      <div className="convite-explorar"><span>Explore meu universo</span><Link to="/sobre" aria-label="Conhecer Iasmin">↓</Link></div>
+    </section>
   )
 }
 
-export default App
+function PaginaSobre() {
+  return <div className="pagina-interna"><div className="pagina-abertura"><span className="etiqueta-pagina">01 / QUEM SOU</span><h1>Além do <em>código.</em></h1><p>Uma mente curiosa, apaixonada por transformar ideias em possibilidades.</p></div><SobreMim /><div className="proxima-pagina"><span>Próxima parada</span><Link to="/projetos">Conheça meus projetos <span aria-hidden="true">↗</span></Link></div></div>
+}
+function PaginaProjetos() {
+  const [aberto, setAberto] = useState(null)
+  return <div className="pagina-interna"><div className="pagina-abertura"><span className="etiqueta-pagina">02 / O QUE CRIO</span><h1>Ideias em <em>movimento.</em></h1><p>Projetos, experimentos e soluções em evolução.</p></div><section className="projetos projetos-pagina" id="projetos"><p className="subtitulo">MEU TRABALHO</p><h2>Projetos<span>.</span></h2><div className="cards">{projetos.map(projeto => <button type="button" className="card card-projeto" key={projeto.numero} onClick={() => setAberto(projeto)}><div className="projeto-topo"><span className="projeto-icone">{projeto.icone}</span><span className="projeto-status">{projeto.status}</span></div><span className="card-numero">PROJETO {projeto.numero}</span><h3>{projeto.titulo}</h3><p>{projeto.descricao}</p><span className="projeto-tecnologias">{projeto.tecnologias}</span><span className="projeto-ver">Ver detalhes →</span></button>)}</div></section><div className="proxima-pagina"><span>Tem uma ideia?</span><Link to="/contato">Vamos conversar <span aria-hidden="true">↗</span></Link></div><ProjetoModal projeto={aberto} fechar={() => setAberto(null)} /></div>
+}
+function PaginaContato() {
+  return <div className="pagina-interna"><div className="pagina-abertura"><span className="etiqueta-pagina">03 / VAMOS CONVERSAR</span><h1>O próximo projeto <em>pode começar aqui.</em></h1><p>Adoro conhecer pessoas, trocar ideias e criar novas possibilidades.</p></div><Contato /><div className="proxima-pagina"><span>Voltar ao começo</span><Link to="/">Meu universo digital <span aria-hidden="true">↗</span></Link></div></div>
+}
+function TrocaDePagina() {
+  const location = useLocation()
+  const [aviso, setAviso] = useState(null)
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
+    const dados = { '/sobre': ['Prazer, vou te contar mais sobre mim. 💜', '/projetos', 'Ver projetos →'], '/projetos': ['Aqui estão as ideias que estou construindo. 🚀', '/contato', 'Vamos conversar →'], '/contato': ['Que bom que chegou até aqui! 💌', '/', 'Voltar ao início ↑'] }
+    setAviso(dados[location.pathname] || null)
+    const id = setTimeout(() => setAviso(null), 4500)
+    return () => clearTimeout(id)
+  }, [location.pathname])
+  return <main className="portfolio portfolio-com-paginas"><Navegacao /><div className="troca-pagina" key={location.pathname}><Routes location={location}><Route path="/" element={<Inicio />} /><Route path="/sobre" element={<PaginaSobre />} /><Route path="/projetos" element={<PaginaProjetos />} /><Route path="/contato" element={<PaginaContato />} /><Route path="*" element={<div className="pagina-abertura"><h1>Página não encontrada.</h1><Link to="/">Voltar ao início</Link></div>} /></Routes></div>{aviso && <aside className="assistente-secao assistente-navegacao" role="status"><span className="assistente-simbolo" aria-hidden="true">✦</span><div className="assistente-texto"><strong>IASMIN KUBIS</strong><p>{aviso[0]}</p><Link className="assistente-acao" to={aviso[1]} onClick={() => setAviso(null)}>{aviso[2]}</Link></div><button type="button" className="assistente-fechar" aria-label="Fechar mensagem" onClick={() => setAviso(null)}>×</button></aside>}</main>
+}
+export default function App() { return <BrowserRouter><TrocaDePagina /></BrowserRouter> }
