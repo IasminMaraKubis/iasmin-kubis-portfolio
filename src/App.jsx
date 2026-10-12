@@ -118,24 +118,102 @@ function Inicio() {
   )
 }
 
-function PaginaSobre() {
-  return <div className="pagina-interna"><div className="pagina-abertura"><span className="etiqueta-pagina">01 / QUEM SOU</span><h1>Além do <em>código.</em></h1><p>Uma mente curiosa, apaixonada por transformar ideias em possibilidades.</p></div><SobreMim /><div className="proxima-pagina"><span>Próxima parada</span><Link to="/projetos">Conheça meus projetos <span aria-hidden="true">↗</span></Link></div></div>
+const mensagensPagina = {
+  sobre: ['Minha história não cabe em uma linha de código. 💜', 'Explore minhas tecnologias! ✨'],
+  projetos: ['Aqui as ideias começam a ganhar forma. 🚀', 'Clique em um projeto para ver os detalhes! 💻'],
+  contato: ['Que bom que chegou até aqui! 💌', 'Me conte sua ideia e vamos conversar. ✨']
 }
-function PaginaProjetos() {
+
+const versoesPersonagem = {
+  sobre: {
+    base: '/personagem-versoes/curiosa.webp',
+    reacao: '/personagem-versoes/boas-vindas.webp',
+    titulo: 'Muito além do código',
+    fala: 'Curiosidade é o que me move. Explore minhas tecnologias! ✨',
+    resposta: 'Prazer! Aqui você conhece um pouco mais sobre mim. 💜'
+  },
+  projetos: {
+    base: '/personagem-versoes/projetos.webp',
+    reacao: '/personagem-versoes/pisca.webp',
+    titulo: 'Cada ideia tem uma história',
+    fala: 'Escolha um projeto para descobrir o que estou construindo. 🚀',
+    resposta: 'Encontrou algo interessante? Vamos conversar! 💻'
+  },
+  contato: {
+    base: '/personagem-versoes/contato.webp',
+    reacao: '/personagem-versoes/interage.webp',
+    titulo: 'Uma conversa pode criar algo incrível',
+    fala: 'Tem uma ideia? Quero ouvir você! 💌',
+    resposta: 'Adoro conhecer pessoas e transformar ideias em projetos! ✨'
+  }
+}
+
+function PersonagemNasPaginas({ pagina }) {
+  const navegar = useNavigate()
+  const versao = versoesPersonagem[pagina]
+  const [reagindo, setReagindo] = useState(false)
+  const [fala, setFala] = useState(versao.fala)
+  const temporizador = useRef(null)
+  const falaTimer = useRef(null)
+
+  useEffect(() => () => {
+    clearTimeout(temporizador.current)
+    clearTimeout(falaTimer.current)
+  }, [])
+
+  function reagir(texto = versao.resposta) {
+    setReagindo(true)
+    setFala(texto)
+    clearTimeout(temporizador.current)
+    clearTimeout(falaTimer.current)
+    temporizador.current = setTimeout(() => setReagindo(false), 1800)
+    falaTimer.current = setTimeout(() => setFala(versao.fala), 4200)
+  }
+
+  useEffect(() => {
+    const seletores = {
+      sobre: '.tecnologia, .sobre-tecnologias button',
+      projetos: '.vitrine__card, .vitrine__filtro',
+      contato: '.contato-experiencia__opcao'
+    }
+    const observar = (evento) => {
+      if (evento.target.closest?.(seletores[pagina])) reagir()
+    }
+    document.addEventListener('click', observar)
+    return () => document.removeEventListener('click', observar)
+  }, [pagina])
+
   return (
-    <div className="pagina-interna">
-      <div className="pagina-abertura">
-        <span className="etiqueta-pagina">02 / O QUE CRIO</span>
-        <h1>Ideias em <em>movimento.</em></h1>
-        <p>Projetos, experimentos e soluções em evolução.</p>
+    <aside className={`personagem-cena personagem-cena--${pagina}`} aria-label={`Iasmin interativa na página ${pagina}`}>
+      <div className="personagem-cena__figura">
+        <img className={`personagem-cena__pose ${reagindo ? 'personagem-cena__pose--oculta' : ''}`} src={versao.base} alt={`Iasmin apresenta a página ${pagina}`} />
+        <img className={`personagem-cena__pose personagem-cena__pose--reacao ${reagindo ? 'personagem-cena__pose--ativa' : ''}`} src={versao.reacao} alt="" aria-hidden="true" />
+        <button type="button" className="personagem-cena__interagir" onClick={() => reagir()} aria-label="Interagir com Iasmin" />
       </div>
-      <Projetos />
-    </div>
+      <div className="personagem-cena__texto" aria-live="polite">
+        <span className="personagem-cena__assinatura">IASMIN · INTERATIVA ✦</span>
+        <strong>{versao.titulo}</strong>
+        <p>{fala}</p>
+        <div className="personagem-cena__acoes">
+          {pagina !== 'projetos' && <button type="button" onClick={() => navegar('/projetos')}>Ver projetos ↗</button>}
+          {pagina !== 'contato' && <button type="button" onClick={() => navegar('/contato')}>Conversar ↗</button>}
+          {pagina === 'contato' && <button type="button" onClick={() => navegar('/')}>Voltar ao início ↗</button>}
+        </div>
+      </div>
+    </aside>
   )
 }
-function PaginaContato() {
-  return <div className="pagina-interna"><div className="pagina-abertura"><span className="etiqueta-pagina">03 / VAMOS CONVERSAR</span><h1>O próximo projeto <em>pode começar aqui.</em></h1><p>Adoro conhecer pessoas, trocar ideias e criar novas possibilidades.</p></div><Contato /><div className="proxima-pagina"><span>Voltar ao começo</span><Link to="/">Meu universo digital <span aria-hidden="true">↗</span></Link></div></div>
+
+function PaginaSobre() {
+  return <div className="pagina-interna"><div className="pagina-abertura pagina-abertura-viva"><div className="pagina-abertura__texto"><span className="etiqueta-pagina">01 / QUEM SOU</span><h1>Além do <em>código.</em></h1><p>Uma mente curiosa, apaixonada por transformar ideias em possibilidades.</p></div><PersonagemNasPaginas pagina="sobre" /></div><SobreMim /><div className="proxima-pagina"><span>Próxima parada</span><Link to="/projetos">Conheça meus projetos <span aria-hidden="true">↗</span></Link></div></div>
 }
+function PaginaProjetos() {
+  return <div className="pagina-interna"><div className="pagina-abertura pagina-abertura-viva"><div className="pagina-abertura__texto"><span className="etiqueta-pagina">02 / O QUE CRIO</span><h1>Ideias em <em>movimento.</em></h1><p>Projetos, experimentos e soluções em evolução.</p></div><PersonagemNasPaginas pagina="projetos" /></div><Projetos /></div>
+}
+function PaginaContato() {
+  return <div className="pagina-interna"><div className="pagina-abertura pagina-abertura-viva"><div className="pagina-abertura__texto"><span className="etiqueta-pagina">03 / VAMOS CONVERSAR</span><h1>O próximo projeto <em>pode começar aqui.</em></h1><p>Adoro conhecer pessoas, trocar ideias e criar novas possibilidades.</p></div><PersonagemNasPaginas pagina="contato" /></div><Contato /><div className="proxima-pagina"><span>Voltar ao começo</span><Link to="/">Meu universo digital <span aria-hidden="true">↗</span></Link></div></div>
+}
+
 function TrocaDePagina() {
   const location = useLocation()
   const [aviso, setAviso] = useState(null)

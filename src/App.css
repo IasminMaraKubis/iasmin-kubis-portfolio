@@ -1712,63 +1712,107 @@ html {
   .proxima-pagina { padding: 40px 7%; }
 }
 @media (prefers-reduced-motion: reduce) { .troca-pagina, .pagina-abertura::before { animation: none; } .navegacao-links a, .convite-explorar a { transition: none; } }
-/* Transições e interações premium */
 
-@keyframes entrarPagina {
-  from {
-    opacity: 0;
-    transform: translateY(18px);
-    filter: blur(5px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-    filter: blur(0);
-  }
+/* CORREÇÃO: botões clicáveis exatamente sobre os CTAs impressos no cenário */
+.pagina-inicio .camera-interativa.hero-vivo { max-height: none; }
+.pagina-inicio .camera-interativa .cta-cenario {
+  display: block; position: absolute; z-index: 25; top: 61.1%; height: 7.8%;
+  margin: 0; padding: 0; border: 0; border-radius: 999px;
+  background: transparent; cursor: pointer; pointer-events: auto;
 }
+.pagina-inicio .camera-interativa .cta-cenario-projetos { left: 60.2%; width: 16.3%; }
+.pagina-inicio .camera-interativa .cta-cenario-contato { left: 77.3%; width: 13.2%; }
+.pagina-inicio .camera-interativa .cta-cenario:hover { box-shadow: 0 0 24px rgba(255,85,200,.48); }
+.pagina-inicio .camera-interativa .cta-cenario:focus-visible { outline: 3px solid #ffc5ef; outline-offset: 2px; }
 
-.portfolio {
-  animation: entrarPagina 600ms ease-out;
+/* Personagem principal também nas páginas internas — camadas derivadas da arte original */
+.pagina-abertura-viva {
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(280px, 360px);
+  align-items: center; gap: clamp(24px, 5vw, 95px); padding-top: 100px; padding-bottom: 70px;
 }
+.pagina-abertura__texto { min-width: 0; position: relative; z-index: 1; }
+.pagina-abertura-viva .pagina-abertura__texto h1 { font-size: clamp(42px, 6.7vw, 96px); }
+.pagina-abertura-viva .pagina-abertura__texto p { max-width: 600px; }
+.pagina-abertura-viva::before { pointer-events: none; }
+.personagem-pagina {
+  width: 100%; min-width: 0; overflow: hidden; border: 1px solid rgba(255,125,220,.45);
+  border-radius: 26px; position: relative; z-index: 2;
+  background: linear-gradient(155deg,#2d0a44,#12051d); box-shadow: 0 18px 65px rgba(12,2,28,.45), 0 0 24px rgba(210,75,255,.13);
+}
+.personagem-pagina__arte { width: 100%; aspect-ratio: 595/720; position: relative; overflow: hidden; }
+.personagem-pagina__imagem, .personagem-pagina__camada {
+  position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: fill;
+  pointer-events: none;
+}
+.personagem-pagina__camada { transition: opacity .20s ease-out; }
+.personagem-pagina__piscar { z-index: 3; transition: none; }
+.personagem-pagina__toque {
+  position: absolute; inset: 0; z-index: 6; width: 100%; border: 0;
+  background: transparent; cursor: pointer;
+}
+.personagem-pagina__toque:focus-visible { outline: 3px solid #ff94e5; outline-offset: -5px; }
+.personagem-pagina__rodape { padding: 16px 18px 20px; background: rgba(22,6,40,.9); }
+.personagem-pagina__fala { display: block; min-height: 2.6em; color: #f6e4ff; font-size: 13px; line-height: 1.45; }
+.personagem-pagina__acoes { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 12px; }
+.personagem-pagina__acoes button {
+  padding: 10px 13px; border: 1px solid rgba(255,133,223,.55); border-radius: 999px;
+  background: rgba(126,34,172,.30); color: #fff; cursor: pointer; font-weight: 700; font-size: 12px;
+}
+.personagem-pagina__acoes button:hover { background: rgba(195,66,216,.48); }
+@media(max-width: 780px) {
+  .pagina-abertura-viva { grid-template-columns: 1fr; padding-top: 70px; }
+  .personagem-pagina { width: min(100%, 350px); margin-inline: auto; }
+  .pagina-inicio .camera-interativa .cta-cenario { display: none; }
+  .pagina-inicio .acoes-mobile { display: flex; }
+}
+@media (prefers-reduced-motion: reduce) { .personagem-pagina__camada { transition: none; } }
 
-.menu-links a {
+/* Personagem em versões diferentes nas páginas internas — sem repetir a cena de abertura. */
+.pagina-abertura-viva { grid-template-columns: minmax(0,1fr) minmax(290px,420px); }
+.personagem-cena {
+  --cena-cor: #e76bff;
+  position: relative; overflow: hidden; align-self: center; isolation: isolate;
+  border: 1px solid rgba(255,155,230,.35); border-radius: 28px;
+  background: radial-gradient(circle at 85% 5%,rgba(237,99,241,.22),transparent 45%),#180a2d;
+  box-shadow: 0 28px 75px #0a041a88,0 0 34px #da54ff20;
+  transition: transform .35s ease, box-shadow .35s ease;
+}
+.personagem-cena:hover { transform: translateY(-5px); box-shadow: 0 33px 85px #0a041aaf,0 0 55px #da54ff30; }
+.personagem-cena--projetos { --cena-cor: #a884ff; border-radius: 15px 50px 15px 50px; }
+.personagem-cena--contato { --cena-cor: #ff83c8; border-radius: 52px 16px 52px 16px; }
+.personagem-cena__figura { position: relative; width: 100%; aspect-ratio: 1.24; overflow: hidden; }
+.personagem-cena__figura::after { content:"";position:absolute;inset:auto 0 0;height:25%;background:linear-gradient(transparent,#180a2d);pointer-events:none;z-index:2; }
+.personagem-cena__pose { position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:cover;object-position:center 30%;transition:opacity .28s ease,transform .65s ease; }
+.personagem-cena:hover .personagem-cena__pose { transform:scale(1.04); }
+.personagem-cena__pose--reacao { opacity:0; }
+.personagem-cena__pose--ativa { opacity:1; }
+.personagem-cena__pose--oculta { opacity:0; }
+.personagem-cena__interagir { position:absolute;inset:0;width:100%;z-index:3;border:0;background:transparent;cursor:pointer; }
+.personagem-cena__interagir:focus-visible { outline:3px solid white;outline-offset:-6px; }
+.personagem-cena__texto { padding:8px 24px 25px;min-height:160px; }
+.personagem-cena__assinatura { display:block;color:var(--cena-cor);font-size:10px;font-weight:800;letter-spacing:.19em;margin-bottom:8px; }
+.personagem-cena__texto strong { font-size:clamp(16px,2vw,22px);letter-spacing:-.03em; }
+.personagem-cena__texto p { margin:10px 0 14px; font-size:13px;line-height:1.45;color:#e8d7f6; }
+.personagem-cena__acoes { display:flex;flex-wrap:wrap;gap:9px; }
+.personagem-cena__acoes button { background:#a739d12b;color:white;border:1px solid #df91f988;border-radius:999px;padding:9px 13px;font:inherit;font-size:12px;font-weight:700;cursor:pointer;transition:background .2s ease; }
+.personagem-cena__acoes button:hover { background:#a739d177; }
+@media(max-width:780px) { .pagina-abertura-viva { grid-template-columns:1fr; } .personagem-cena { width:min(100%,390px);margin-inline:auto; } }
+@media(prefers-reduced-motion:reduce) { .personagem-cena,.personagem-cena__pose,.personagem-cena__acoes button {transition:none!important;} }
+.proxima-pagina {
   position: relative;
-  transition: color 250ms ease;
+  z-index: 10;
 }
 
-.menu-links a::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: -7px;
-  width: 100%;
-  height: 2px;
-  background: linear-gradient(90deg, #ff55c8, #a855f7);
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform 250ms ease;
+.proxima-pagina a {
+  position: relative;
+  z-index: 11;
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  pointer-events: auto;
 }
 
-.menu-links a:hover::after,
-.menu-links a[aria-current="page"]::after {
-  transform: scaleX(1);
-}
-
-.menu-links a:focus-visible,
-a:focus-visible,
-button:focus-visible {
-  outline: 2px solid #ff85df;
-  outline-offset: 4px;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .portfolio {
-    animation: none;
-  }
-
-  .menu-links a,
-  .menu-links a::after {
-    transition: none;
-  }
+.proxima-pagina::before,
+.proxima-pagina::after {
+  pointer-events: none;
 }
