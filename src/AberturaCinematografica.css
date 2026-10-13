@@ -1,0 +1,19 @@
+/* Abertura cinematográfica isolada: não altera layouts ou animações do portfólio */
+.abertura-ik { position: fixed; inset: 0; z-index: 9999; overflow: hidden; display: grid; place-items: center; padding: 32px 20px; background: radial-gradient(ellipse at 45% 65%, #36124c 0%, #160923 42%, #09040f 100%); color: white; isolation: isolate; animation: abertura-ik-entrada .35s both; }
+.abertura-ik__luz { position: absolute; inset: -35%; z-index: -1; pointer-events: none; background: radial-gradient(circle at 50% 50%, rgba(255,70,186,.2), transparent 36%); animation: abertura-ik-brilho 2.3s ease-in-out both; }
+.abertura-ik__conteudo { text-align: center; width: min(95vw, 920px); animation: abertura-ik-subir .65s .12s both; }
+.abertura-ik__prefixo { display:block; margin-bottom: 18px; font-size: clamp(10px,1.2vw,14px); letter-spacing: .33em; color: #f2a9ea; }
+.abertura-ik__nome { font-size: clamp(50px,11vw,160px); line-height: .9; letter-spacing:-.075em; font-weight: 900; text-shadow: 0 0 38px rgba(255,98,206,.22); }
+.abertura-ik__nome span { color:#ff72d1; }
+.abertura-ik__conteudo p { margin:24px 0; color:#ead3ef; font-size:clamp(15px,2.2vw,22px); letter-spacing:.03em; }
+.abertura-ik__linha { width:min(240px,60vw); height:2px; background:rgba(255,255,255,.12); margin:25px auto 0; overflow:hidden; border-radius:999px; }
+.abertura-ik__linha span { display:block; width:100%; height:100%; background:linear-gradient(90deg,#ff4fc3,#b25bff); transform:translateX(-100%); animation:abertura-ik-carregar 2s .2s ease-out forwards; }
+.abertura-ik__pular { position:absolute; right:clamp(16px,4vw,55px); bottom:clamp(22px,5vh,55px); z-index:1; color:white; border:1px solid rgba(255,171,232,.65); border-radius:999px; background:rgba(74,18,99,.6); padding:13px 20px; min-height:48px; font:inherit; font-weight:700; cursor:pointer; transition:background .2s,transform .2s; }
+.abertura-ik__pular:hover { background:rgba(155,48,159,.7); transform:translateY(-2px); }
+.abertura-ik__pular:focus-visible { outline:3px solid white; outline-offset:4px; }
+@keyframes abertura-ik-entrada { from { opacity:0; } to { opacity:1; } }
+@keyframes abertura-ik-subir { from {opacity:0; transform:translateY(25px) scale(.98);} to {opacity:1;transform:translateY(0) scale(1);} }
+@keyframes abertura-ik-brilho { 0% { transform:scale(.8); opacity:.15; } 65% {opacity:1;} 100% {transform:scale(1.12); opacity:.4;} }
+@keyframes abertura-ik-carregar { to {transform:translateX(0)} }
+@media(max-width:700px) { .abertura-ik__nome { font-size:clamp(48px,13vw,90px); } .abertura-ik__prefixo {letter-spacing:.22em;} .abertura-ik__conteudo p {font-size:15px;} }
+@media(prefers-reduced-motion:reduce) { .abertura-ik * { animation:none !important; transition:none !important; } }

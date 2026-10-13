@@ -36,3 +36,19 @@
 @keyframes sobre-entrar { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 @media (max-width: 900px) { .sobre-experiencia__grade { grid-template-columns: 1fr; } .sobre-experiencia { padding: 115px 6% 75px; } .sobre-experiencia__titulo { font-size: clamp(50px, 10vw, 84px); } }
 @media (prefers-reduced-motion: reduce) { .sobre-experiencia__conteudo, .sobre-experiencia__painel, .sobre-experiencia__resposta { animation: none; } .sobre-experiencia__botao, .sobre-experiencia__chip { transition: none; } }
+
+
+/* Experiência profissional — somente a página Sobre Mim */
+.experiencia-destaque { max-width: 1320px; margin: clamp(68px, 8vw, 120px) auto 0; }
+.experiencia-destaque__cabecalho { max-width: 780px; }
+.experiencia-destaque__cabecalho h2 { font-size: clamp(32px, 4.4vw, 60px); line-height: 1.12; letter-spacing: -.035em; margin: 12px 0 18px; }
+.experiencia-destaque__cabecalho h2 em { font-style: normal; color: #ff87d5; }
+.experiencia-destaque__cabecalho > p:last-child { color: #d6c6e3; font-size: 16px; line-height: 1.75; }
+.experiencia-destaque__cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; margin-top: 30px; }
+.experiencia-destaque__card { padding: clamp(22px, 3vw, 32px); border: 1px solid rgba(240, 135, 231, .24); border-radius: 23px; background: linear-gradient(135deg, rgba(153, 71, 191, .12), rgba(255, 255, 255, .025)); transition: transform .25s ease, border-color .25s ease, box-shadow .25s ease; }
+.experiencia-destaque__card:hover { transform: translateY(-5px); border-color: #e985db9c; box-shadow: 0 15px 42px #13052188; }
+.experiencia-destaque__icone { display: inline-grid; place-items: center; width: 45px; height: 45px; border-radius: 13px; color: #ff9de4; background: #a849bd27; font-size: 24px; }
+.experiencia-destaque__card h3 { font-size: clamp(18px, 2vw, 23px); margin: 18px 0 10px; }
+.experiencia-destaque__card p { color: #d3bedf; line-height: 1.7; margin: 0; }
+@media (max-width: 650px) { .experiencia-destaque__cards { grid-template-columns: 1fr; } .experiencia-destaque__card { padding: 23px; } }
+@media (prefers-reduced-motion: reduce) { .experiencia-destaque__card { transition: none; } .experiencia-destaque__card:hover { transform: none; } }
